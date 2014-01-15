@@ -1,4 +1,13 @@
 ofxEpilog
 =========
+OpenFrameworks library for Epilog laser cutter.
+// write description
 
-Epilog laser cutter for openFrameworks
+# How it works
+// write diagrams
+
+# Examples
+// write examples
+
+--
+mitsuhito.ando@gmail.com
