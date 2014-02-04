@@ -86,11 +86,72 @@ ofPtr<HPGLBuffer> HPGLBuffer::create(ofImage img, OutputConfig config)
     //
 }
 
-ofPtr<GMLBuffer> GMLBuffer::create(ofFile gml, OutputConfig config)
+ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
 {
-    //
-    // not implemented yet
-    //
+    ofPtr<GMLBuffer> buffer = ofPtr<GMLBuffer>(new GMLBuffer());
+    
+    if(gmlFilePath == "")
+    {
+        ofLog(OF_LOG_ERROR, "GML file path is empty.");
+        return buffer;
+    }
+    ofXml gml;
+    if(gml.load(gmlFilePath))
+    {
+        /*
+         GML minimum format
+         <gml spec='1.0 (minimum)'>
+         <tag>
+         <drawing>
+         <stroke>
+         <pt>
+         <x>0.0</x>
+         <y>0.0</y>
+         </pt>
+         </stroke>
+         </drawing>
+         </tag>
+         </gml>
+         */
+        if(gml.exists("//tag/drawing/stroke"))
+        {
+            gml.setTo("//tag/drawing[0]");
+            int strokes = gml.getNumChildren();
+            if(strokes == 0)
+            {
+                ofLog(OF_LOG_WARNING, "No stroke in this GML.");
+                return buffer;
+            }
+            
+            gml.setTo("stroke[0]");
+            for(int i=0; i<strokes; i++)
+            {
+                int points = gml.getNumChildren();
+                gml.setTo("pt[0]");
+                for(int j=0; j<points; j++)
+                {
+                    double x = gml.getValue<double>("x");
+                    double y = gml.getValue<double>("y");
+                    
+                    ofLog(OF_LOG_VERBOSE, "GML::stroke["+ofToString(i)+"]::pt["+ofToString(j)+"] x="+ofToString(x)+" y="+ofToString(y));
+                    
+                    gml.setToSibling();
+                }
+                gml.setToParent();
+                gml.setToSibling();
+            }
+        }
+        else
+        {
+            ofLog(OF_LOG_ERROR, "This file is not GML.");
+            return buffer;
+        }
+    }
+    else
+    {
+        ofLog(OF_LOG_ERROR, "Unable to load GML file.");
+        return buffer;
+    }
 }
 
 ofxEpilog::ofxEpilog()
@@ -101,6 +162,9 @@ ofxEpilog::ofxEpilog()
     char localhost[128] = "";
     gethostname(localhost, sizeof(localhost));
     hostname = string(localhost);
+    
+    //modelType = UNKNOWN;
+    //isLiveMode = false;
     
     cout << "ofxEpilog::ofxEpilog() hostname=" << hostname << endl;
 }
@@ -120,6 +184,8 @@ void ofxEpilog::setWorkareaSize(WorkareaSize size)
 
 void ofxEpilog::setOutputConfig(OutputConfig config)
 {
+    ofLog(OF_LOG_WARNING, "ofxEpilog.modelType is UNKNOWN. Specify what model you using. (eg: FUSION, MINI, HELIX ....");
+    
     if(config.rpower > 100)
         config.rpower = 100;
     
@@ -167,16 +233,19 @@ OutputConfig ofxEpilog::getOutputConfig()
 }
 
 
-bool ofxEpilog::connect()
+bool ofxEpilog::connect(bool liveMode)
 {
     ofLog(OF_LOG_VERBOSE, "ofxEpilog::connect(): start cnnecting to the laser cutter.");
+    isLiveMode = liveMode;
     return connect(ipAddr);
 }
 
-bool ofxEpilog::connect(string ip)
+bool ofxEpilog::connect(string ip, bool liveMode)
 {
     if(ip == "")
         return false;
+    
+    isLiveMode = liveMode;
     
     if(tcpClient.isConnected())
     {
@@ -275,6 +344,8 @@ bool ofxEpilog::send(const ofPtr<HPGLBuffer> &buffer, JOB_TYPE type)
     if(!tcpClient.isConnected())
         return false;
     
+    if(buffer->size() == 0)
+        return false;
     
     bool isSent = true;
     if(type == VECTOR)

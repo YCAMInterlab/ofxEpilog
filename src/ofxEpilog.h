@@ -32,6 +32,7 @@
 #define MM_PER_INCH 25.4
 
 enum JOB_TYPE {VECTOR, RASTER};
+//enum MODEL {FUSION, MINI, HELIX, UNKNOWN};
 
 typedef struct LaserCutterOutputConfig
 {
@@ -54,12 +55,22 @@ typedef struct LaserCutterWorkareaSize
 } WorkareaSize;
 
 //
-// HPGLBuffer creates HPGL formatted string from ofPath, ofPolyline, ofImage, pdf, eps, jpg, png, gif ...
+// HPGLBuffer creates HPGL formatted string from ofPath, ofPolyline, ofPixels, ofImage, pdf, eps, jpg, png, gif ...
 // If you want to create from other types, make sub class and overload static method.
 //
 class HPGLBuffer : public ofBuffer
 {
 public:
+    HPGLBuffer() : ofBuffer()
+    {
+        ofLog(OF_LOG_VERBOSE, "HPGLBuffer() is called.");
+    };
+    
+    ~HPGLBuffer()
+    {
+        ofLog(OF_LOG_VERBOSE, "~HPGLBuffer() is called.");
+    };
+    
     static ofPtr<HPGLBuffer> create(ofPolyline line, OutputConfig config);
     static ofPtr<HPGLBuffer> create(ofPath path, OutputConfig config);
     static ofPtr<HPGLBuffer> create(ofImage img, OutputConfig config);
@@ -68,12 +79,22 @@ public:
 
 //
 // GMLBuffer creates HPGL formatted string from Graffiti Markup Language.
-// To know GML dital, see http://www.graffitimarkuplanguage.com/g-m-l-spec/
+// To know GML detail, see http://www.graffitimarkuplanguage.com/g-m-l-spec/
 //
 class GMLBuffer : public HPGLBuffer
 {
 public:
-    static ofPtr<GMLBuffer> create(ofFile gml, OutputConfig config);
+    GMLBuffer() : HPGLBuffer()
+    {
+        ofLog(OF_LOG_VERBOSE, "GMLBuffer() is called.");
+    };
+    
+    ~GMLBuffer()
+    {
+        ofLog(OF_LOG_VERBOSE, "~GMLBuffer() is called.");
+    };
+    //static ofPtr<GMLBuffer> create(ofFile gml, OutputConfig config);
+    static ofPtr<GMLBuffer> create(string gmlFilePath, OutputConfig config);
 };
 
 //class ofxEpilog : public ofThread
@@ -86,8 +107,8 @@ public:
     ofxEpilog(string ip, WorkareaSize size, OutputConfig config);
     ~ofxEpilog();
     
-    bool connect();
-    bool connect(string ip);
+    bool connect(bool liveMode=false);
+    bool connect(string ip, bool liveMode=false);
     void disconnect();
     bool isConnected();
     
@@ -108,7 +129,8 @@ protected:
     OutputConfig outputConfig;
     ofxTCPClient tcpClient;
     static const uint PRINTER_SERVICE_PORT = 515;
-    
+    //MODEL modelType;
+    //bool isLiveMode;
     //void threadedFunction();
     
     string hostname;
