@@ -21,7 +21,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
- */
+*/
 
 #include "ofxEpilog.h"
 
@@ -81,9 +81,37 @@ ofPtr<HPGLBuffer> HPGLBuffer::create(ofPath path, OutputConfig config)
 
 ofPtr<HPGLBuffer> HPGLBuffer::create(ofImage img, OutputConfig config)
 {
+    ofPtr<HPGLBuffer> buffer = ofPtr<HPGLBuffer>(new HPGLBuffer());
+    
+    ofLog(OF_LOG_VERBOSE, "HPGLBuffer::create(ofImage, OutputConfig) img.width=%d, img.height=%d", img.width, img.height);
+    
+    int w = img.width;
+    int h = img.height;
+    if(w == 0 && h == 0)
+        return buffer;
     //
-    // not implemented yet
+    // TODO: finish implementation
     //
+    /*
+     int basex = 0;
+     int basey = 0;
+     
+     std::ostringstream stream;
+     string tmp = "";
+     
+     unsigned char *pixels = img.getPixels();
+     for(int i=0; i<w; i+=8)
+     {
+     for(int j=0; j<h; j+=8)
+     {
+     int r = pixels[j*3*w + i*3];
+     int g = pixels[j*3*w + i*3+1];
+     int b = pixels[j*3*w + i*3+2];
+     }
+     }
+    */
+    
+    return buffer;
 }
 
 ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
@@ -95,6 +123,7 @@ ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
         ofLog(OF_LOG_ERROR, "GML file path is empty.");
         return buffer;
     }
+    
     ofXml gml;
     if(gml.load(gmlFilePath))
     {
@@ -112,7 +141,11 @@ ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
          </drawing>
          </tag>
          </gml>
-         */
+        */
+        
+        std::ostringstream stream;
+        string tmp;
+        
         if(gml.exists("//tag/drawing/stroke"))
         {
             gml.setTo("//tag/drawing[0]");
@@ -133,7 +166,26 @@ ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
                     double x = gml.getValue<double>("x");
                     double y = gml.getValue<double>("y");
                     
-                    ofLog(OF_LOG_VERBOSE, "GML::stroke["+ofToString(i)+"]::pt["+ofToString(j)+"] x="+ofToString(x)+" y="+ofToString(y));
+                    //
+                    // TODO: Convert coordinates to the MM.
+                    //
+                    
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    
+                    if(j==0)
+                    {
+                        stream << "PU" << floor(x) << ',' << floor(y) << ';'; // PUx,y;
+                        tmp = stream.str();
+                        buffer->append(tmp.c_str(), tmp.length());
+                    }
+                    
+                    stream << "PD" << floor(x) << ',' << floor(y);  // PDx,y{,x,y...};
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    
+                    //ofLog(OF_LOG_VERBOSE, "GML::stroke["+ofToString(i)+"]::pt["+ofToString(j)+"] x="+ofToString(x)+" y="+ofToString(y));
                     
                     gml.setToSibling();
                 }
@@ -152,6 +204,8 @@ ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
         ofLog(OF_LOG_ERROR, "Unable to load GML file.");
         return buffer;
     }
+    
+    return buffer;
 }
 
 ofxEpilog::ofxEpilog()
@@ -169,6 +223,11 @@ ofxEpilog::ofxEpilog()
     cout << "ofxEpilog::ofxEpilog() hostname=" << hostname << endl;
 }
 
+ofxEpilog::ofxEpilog(const ofxEpilog &obj)
+{
+    ofLog(OF_LOG_VERBOSE, "ofxEpilog::ofxEpilog(const ofxEpilog &obj)");
+}
+
 ofxEpilog::~ofxEpilog()
 {
     if(tcpClient.isConnected())
@@ -184,7 +243,7 @@ void ofxEpilog::setWorkareaSize(WorkareaSize size)
 
 void ofxEpilog::setOutputConfig(OutputConfig config)
 {
-    ofLog(OF_LOG_WARNING, "ofxEpilog.modelType is UNKNOWN. Specify what model you using. (eg: FUSION, MINI, HELIX ....");
+    ofLog(OF_LOG_WARNING, "ofxEpilog.modelType is UNKNOWN. Specify what model you using. (e.g. FUSION, MINI, HELIX ....");
     
     if(config.rpower > 100)
         config.rpower = 100;
@@ -232,20 +291,13 @@ OutputConfig ofxEpilog::getOutputConfig()
     return outputConfig;
 }
 
-
-bool ofxEpilog::connect(bool liveMode)
-{
-    ofLog(OF_LOG_VERBOSE, "ofxEpilog::connect(): start cnnecting to the laser cutter.");
-    isLiveMode = liveMode;
-    return connect(ipAddr);
-}
-
 bool ofxEpilog::connect(string ip, bool liveMode)
 {
     if(ip == "")
         return false;
     
-    isLiveMode = liveMode;
+    ofLog(OF_LOG_VERBOSE, "ofxEpilog::connect(): start cnnecting to the laser cutter.");
+    //isLiveMode = liveMode;
     
     if(tcpClient.isConnected())
     {
@@ -272,7 +324,7 @@ bool ofxEpilog::connect(string ip, bool liveMode)
      +----+-------+----+
      Command code - 2
      Operand - Printer queue name
-     */
+    */
     tcpClient.sendRaw("\002\n");
     
     //string response = tcpClient.receiveRaw();
@@ -288,7 +340,7 @@ bool ofxEpilog::connect(string ip, bool liveMode)
          Command code - 2
          Operand 1 - Number of bytes in control file
          Operand 2 - Name of control file
-         */
+        */
         stream << "\002" << hostname.length()+2 << " cfA" << hostname << "\n";
         tcpClient.sendRaw(stream.str());
         
@@ -305,7 +357,7 @@ bool ofxEpilog::connect(string ip, bool liveMode)
          +---+------+----+
          Command code - 'H'
          Operand - Name of host
-         */
+        */
         stream.str("");
         stream.clear();
         stream << "H" << hostname << "\n" << '\0';
@@ -325,7 +377,7 @@ bool ofxEpilog::connect(string ip, bool liveMode)
          Command code - 3
          Operand 1 - Number of bytes in data file
          Operand 2 - Name of data file
-         */
+        */
         stream.str("");
         stream.clear();
         stream << "\003" << "125899906843000" << " dfA" << hostname << "\n"; // <- buffer size is correct?
@@ -340,12 +392,20 @@ bool ofxEpilog::connect(string ip, bool liveMode)
 }
 
 bool ofxEpilog::send(const ofPtr<HPGLBuffer> &buffer, JOB_TYPE type)
-{
+{    
+    ofLog(OF_LOG_VERBOSE, "ofxEpilog::send() const ofPtr<HPGLBuffer> &buffer.useCount=" + ofToString(buffer.use_count()) );
+    
     if(!tcpClient.isConnected())
+    {
+        ofLog(OF_LOG_VERBOSE, "ofxEpilog is not connected.");
         return false;
+    }
     
     if(buffer->size() == 0)
+    {
+        ofLog(OF_LOG_VERBOSE, "HPGLBuffer is empty.");
         return false;
+    }
     
     bool isSent = true;
     if(type == VECTOR)
@@ -469,7 +529,7 @@ bool ofxEpilog::sendPCLRasterHeader()
     
     stream.str("");
     stream.clear();
-    stream << "\e&y0C"; // Unknown purpose
+    stream << "\e&y0C"; // Global air assist (0 = global, 1 = local)
     isSent &= tcpClient.sendRaw(stream.str());
     
     stream.str("");
@@ -504,7 +564,12 @@ bool ofxEpilog::sendPCLRasterHeader()
     
     stream.str("");
     stream.clear();
-    stream << "\e&y1O"; // Raster direction (1 = up)
+    stream << "\e&y0O"; // Raster direction (0 = down, 1 = up)
+    isSent &= tcpClient.sendRaw(stream.str());
+    
+    stream.str("");
+    stream.clear();
+    stream << "\e&z" << 2 << "A"; // Air assist (0 = raster air assist off, 1 = raster air assist on, 2 = global air assist on)
     isSent &= tcpClient.sendRaw(stream.str());
     
     return isSent;
@@ -697,4 +762,4 @@ bool ofxEpilog::updateVectorOutputConfig()
  }
  }
  }
- */
+*/

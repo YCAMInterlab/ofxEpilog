@@ -20,8 +20,8 @@
  
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
- */
+
+*/
 
 #ifndef epilogTest_ofxEpilog_h
 #define epilogTest_ofxEpilog_h
@@ -63,12 +63,12 @@ class HPGLBuffer : public ofBuffer
 public:
     HPGLBuffer() : ofBuffer()
     {
-        ofLog(OF_LOG_VERBOSE, "HPGLBuffer() is called.");
+        //ofLog(OF_LOG_VERBOSE, "HPGLBuffer() is called." + ofToString(this));
     };
     
-    ~HPGLBuffer()
+    virtual ~HPGLBuffer()
     {
-        ofLog(OF_LOG_VERBOSE, "~HPGLBuffer() is called.");
+        //ofLog(OF_LOG_VERBOSE, "~HPGLBuffer() is called." + ofToString(this));
     };
     
     static ofPtr<HPGLBuffer> create(ofPolyline line, OutputConfig config);
@@ -79,19 +79,19 @@ public:
 
 //
 // GMLBuffer creates HPGL formatted string from Graffiti Markup Language.
-// To know GML detail, see http://www.graffitimarkuplanguage.com/g-m-l-spec/
+// To know GML detail, see http://www.graffitimarkuplanguage.com/g-m-l-spec/ . 
 //
 class GMLBuffer : public HPGLBuffer
 {
 public:
     GMLBuffer() : HPGLBuffer()
     {
-        ofLog(OF_LOG_VERBOSE, "GMLBuffer() is called.");
+        //ofLog(OF_LOG_VERBOSE, "GMLBuffer() is called." + ofToString(this));
     };
     
-    ~GMLBuffer()
+    virtual ~GMLBuffer()
     {
-        ofLog(OF_LOG_VERBOSE, "~GMLBuffer() is called.");
+        //ofLog(OF_LOG_VERBOSE, "~GMLBuffer() is called." + ofToString(this));
     };
     //static ofPtr<GMLBuffer> create(ofFile gml, OutputConfig config);
     static ofPtr<GMLBuffer> create(string gmlFilePath, OutputConfig config);
@@ -102,12 +102,12 @@ class ofxEpilog
 {
 public:
     ofxEpilog();
+    ofxEpilog(const ofxEpilog &obj);
     ofxEpilog(string ip);
     ofxEpilog(string ip, WorkareaSize size);
     ofxEpilog(string ip, WorkareaSize size, OutputConfig config);
     ~ofxEpilog();
     
-    bool connect(bool liveMode=false);
     bool connect(string ip, bool liveMode=false);
     void disconnect();
     bool isConnected();
