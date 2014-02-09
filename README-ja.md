@@ -24,7 +24,7 @@ ofxEpilog の使い方
 ---
 * __projectGenerator を使用してプロジェクト新規作成にアドオンを追加する場合__  
     addons の項目に ofxNetwork と ofxEpilog を選択し、追加してください。  
-    ![projectGenerator screen shot](https://github.com/mitsuhito/ofxEpilog/blob/master/ofxEpilogAddonUsage1.png)
+    ![projectGenerator screen shot](https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage1.png)
 
 * __既存のプロジェクトに追加する場合__
     * ofxNetwork を既に使用していない場合、addons グループの下に New Group でグループを新規作成し、"ofxNetwork" と名前を変更します。
@@ -33,8 +33,7 @@ ofxEpilog の使い方
     * addons グループの下に New Group でグループを新規作成し、"ofxEpilog" と名前を変更します。
     * ofxEpilog のグループの下に ofxEpilog/src をドラッグ&ドロップします。
     * Create groups for any added folders のみチェックが入っている状態で Finish を選択します。  
-    ![xcode adding src screen shot](https://github.com/mitsuhito/ofxEpilog/blob/master/ofxEpilogAddonUsage2.png)
-    ![xcode side bbar screen shot](https://github.com/mitsuhito/ofxEpilog/blob/master/ofxEpilogAddonUsage3.png)
+    <img src="https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage3.png"/>
 
 
 * __ofxEpilog クラスの利用方法__  
