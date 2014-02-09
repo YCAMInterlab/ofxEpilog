@@ -72,7 +72,7 @@ ofxEpilogの特長は、EpilogのレーザーカッターをOpen Frameworksか�
     bool isConnected = epilogLaser.connect("192.168.3.5");
   ```
 
-  接続済みの状態で加工ジョブを送信します。加工ジョブの型はofPolyline, ofImage, Graffiti Markup Languageをサポートしています。
+  接続済みの状態で加工ジョブを送信します。加工ジョブの型は`ofPolyline`, `ofImage`, `Graffiti Markup Language`をサポートしています。
   ```
     // 100mm * 100mm の矩形をカットする
     ofPolyline line;
@@ -89,10 +89,15 @@ ofxEpilogの特長は、EpilogのレーザーカッターをOpen Frameworksか�
     {
         bool isSent = epilogLaser.send(hpglBuffer, VECTOR);
         ofLog(OF_LOG_NOTICE, "isSent=%d", isSent);
-	epilogLaser.disconnect();
     }
   ```
-  カスタムオブジェクトを加工ジョブとして送信したい場合、ofPtr<HPGLBuffer> HPGLBuffer::create()メソッドをオーバーロードするか、HPGLBufferのサブクラスを作成し、ファクトリメソッドを追加することで可能になります。
+  カスタムオブジェクトを加工ジョブとして送信したい場合、`ofPtr<HPGLBuffer> HPGLBuffer::create()`メソッドをオーバーロードするか、`HPGLBuffer`のサブクラスを作成し、ファクトリメソッドを追加することで可能になります。
+
+
+  接続を切ります。
+  ```
+	epilogLaser.disconnect();
+  ```
 
 
 サンプルプログラム
