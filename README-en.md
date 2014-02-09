@@ -30,7 +30,7 @@ Usage
     * If you are not using ofxNetwork, create a new group named "ofxNetwork" inside addons group.
     * Drag ofxNetwork/src directory into this new group.
     * Create a new group named "ofxEpilog" inside addons group.
-    * Drag ofxEpilog/src directory into this new group.
+    * Drag ofxEpilog/src directory into this new group.  
     <img src="https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage3.png"/>
 
 
