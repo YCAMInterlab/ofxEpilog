@@ -2,7 +2,7 @@ ofxEpilog
 =========
 
 # Description
-ofxEpilog is an Open Frameworks addon for the Epilog laser cutter that runs on Mac OS X. Currently we are not supporting Windows and Linux.
+ofxEpilog is an Open Frameworks addon for the Epilog laser cutters that runs on Mac OS X. Currently we are not supporting Windows and Linux.
 ofxEpilog lets you control Epilog laser cutters interactive, generative in Open Frameworks. It is possible to generate print jobs from familiar types of Open Frameworks and send it through TCP connection. Once you have established connection, you can send jobs to control head position and turn on or off laser beam continuously in almost real time.
 
 
@@ -22,7 +22,7 @@ Installation
 
 Usage
 ---
-* __Create new project from projectGenerator__  
+* __Create a new project from projectGenerator__  
     Check ofxNetwork and ofxEpilog at addons. 
     ![projectGenerator screen shot](https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage1.png)
 
