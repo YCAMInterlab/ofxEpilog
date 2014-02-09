@@ -74,7 +74,7 @@ ofxEpilog の使い方
     bool isConnected = epilogLaser.connect("192.168.3.5");
     ```  
 
-    * 接続済みの状態で加工ジョブを送信します。加工ジョブの型は `ofPolyline` , `ofImage` , `Graffiti Markup Language` をサポートしています。
+    * 接続済みの状態で加工ジョブを送信します。加工ジョブの型は `ofPolyline` , `ofImage` , `GMLBuffer (Graffiti Markup Language)` をサポートしています。
     ```cpp
     // 100mm * 100mm の矩形をカットする
     ofPolyline line;

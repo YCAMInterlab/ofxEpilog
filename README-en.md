@@ -1,82 +1,80 @@
 ofxEpilog
 =========
 
-# 概要
-ofxEpilog は Epilog のレーザーカッターを Open Frameworks で使用するためのアドオンです。現在は Mac OS X のみのサポートをしており、 Windows や Linux はサポート対象外です。
-ofxEpilog の特長は、Epilog のレーザーカッターを Open Frameworks から動的に使用できる点です。加工データをプログラム内で生成し、そのまま加工ジョブとしてレーザーカッターに送信できます。加工ジョブはレーザーカッターに TCP プロトコルで送信されます。ジョブのセッションを張り続けることでほぼリアルタイムにレーザーカッターのヘッドを操作、照射の制御ができます。
+# Description
+ofxEpilog is an Open Frameworks addon for the Epilog laser cutter that runs on Mac OS X. Currently we are not supporting Windows and Linux.
+ofxEpilog lets you control Epilog laser cutters interactive, generative in Open Frameworks. It is possible to generate print jobs from familiar types of Open Frameworks and send it through TCP connection. Once you have established connection, you can send jobs to control head position and turn on or off laser beam continuously in almost real time.
 
 
-インストール方法
+Installation
 ---
-* Open Frameworks がまだダウンロードされていない場合は `of_v0.8.0_osx_release.zip` をダウンロードしてください。
-  現在の所、ofxEpilog はバージョン0.8.0で開発とテストを行っています。  
+* If you haven't donwloaded Open Frameworks, get `of_v0.8.0_osx_release.zip` from oF site.
+  We are using v0.8.0 to develop and test.  
   **<http://www.openframeworks.cc/download/>**
 
-* 最新版の ofxEpilog を github からダウンロードしてください。ダウンロードが完了したら任意の場所に展開しましょう。  
+* Download newest version of ofxEpilog from github and extract it.  
   **<https://github.com/mitsuhito/ofxEpilog/archive/master.zip>**
   
-  もしくはコマンドラインがお好きな方は `git clone git://github.com/mitsuhito/ofxEpilog.git` をしてください。  
+  If you are familiar with console, type `git clone git://github.com/mitsuhito/ofxEpilog.git` .  
 
-* ofxEpilog ディレクトリを `of_v0.8.0_osx_release/addons/` ディレクトリ内にコピーしてください。
+* Copy ofxEpilog directory into `of_v0.8.0_osx_release/addons/` .
   
 
-ofxEpilog の使い方
+Usage
 ---
-* __projectGenerator を使用してプロジェクト新規作成にアドオンを追加する場合__  
-    addons の項目に ofxNetwork と ofxEpilog を選択し、追加してください。  
+* __Create new project from projectGenerator__  
+    Check ofxNetwork and ofxEpilog at addons. 
     ![projectGenerator screen shot](https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage1.png)
 
-* __既存のプロジェクトに追加する場合__
-    * ofxNetwork を既に使用していない場合、addons グループの下に New Group でグループを新規作成し、"ofxNetwork" と名前を変更します。
-    * ofxNetwork のグループの下に ofxNetwork/src をドラッグ&ドロップします。
-    * Create groups for any added folders のみチェックが入っている状態で Finish を選択します。
-    * addons グループの下に New Group でグループを新規作成し、"ofxEpilog" と名前を変更します。
-    * ofxEpilog のグループの下に ofxEpilog/src をドラッグ&ドロップします。
-    * Create groups for any added folders のみチェックが入っている状態で Finish を選択します。  
+* __Adding an existing project__
+    * If you are not using ofxNetwork, create a new group named "ofxNetwork" inside addons group.
+    * Drag ofxNetwork/src directory into this new group.
+    * Create a new group named "ofxEpilog" inside addons group.
+    * Drag ofxEpilog/src directory into this new group.
     <img src="https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage3.png"/>
 
 
-* __ofxEpilog クラスの利用方法__  
+* __Usage of ofxEpilog class__  
 
-    * ヘッダファイルをインクルードします。
+    * Include header file.
     ```cpp
     #include "ofxEpilog.h"
     ```  
 
-    * ofxEpilog インスタンスを作成します。
+    * Create ofxEpilog instance.
     ```cpp
     ofxEpilog epilogLaser;
     ```  
 
-    * 使用する Epilog レーザーカッターの最大加工可能範囲を設定します。
+    * Set maximum bed size of your laser cutter. 
     ```cpp
     WorkareaSize fusion;
-    fusion.width = 812;				    		// 横幅 mm
-    fusion.height = 508;			    		// 高さ mm
+    fusion.width = 812;				    		// width  mm
+    fusion.height = 508;			    		// height mm
     epilogLaser.setWorkareaSize(fusion);
     ```  
 
-    * カットスピード、カットパワー、彫刻スピード、彫刻パワー、周波数、DPI、オートフォーカス設定などの加工パラメーターを設定します。
+    * Set output parameters (Vector speed, Vector power, Raster speed, Raster power, Frequency, DPI, Auto focus).
     ```cpp
     OutputConfig config;
-    config.vspeed = 80;				    		// カットスピード 1-100%
-    config.vpower = 10;				    		// カットパワー   1-100%
-    config.rspeed = 10;				    		// 彫刻スピード   1-100%
-    config.rpower = 20;				    		// 彫刻パワー     1-100%
+    config.vspeed = 80;				    		// Vector speed   1-100%
+    config.vpower = 10;				    		// Vector power   1-100%
+    config.rspeed = 10;				    		// Raster speed   1-100%
+    config.rpower = 20;				    		// Raster power   1-100%
     config.dpi = 200;				        	// DPI            75-1200
-    config.freq = 100;				        	// 周波数         1-100%
-    config.autoFocusEnabled = false;				// オートフォーカス設定
+    config.freq = 100;				        	// Frequency      1-100%
+    config.autoFocusEnabled = false;				// Auto focus
     epilogLaser.setOutputConfig(config);
     ```  
 
-    * レーザーカッターに割り当てられたIPアドレスを使用して接続を開始します。
+    * Connect to the laser cutter.
     ```cpp
     bool isConnected = epilogLaser.connect("192.168.3.5");
     ```  
 
-    * 接続済みの状態で加工ジョブを送信します。加工ジョブの型は `ofPolyline` , `ofImage` , `Graffiti Markup Language` をサポートしています。
+    * After establishing connection, you can send jobs to the laser cutter. Supported object types are `ofPolyline` , `ofImage` , `GMLBuffer (Graffiti Markup Language)` only.
     ```cpp
-    // 100mm * 100mm の矩形をカットする
+    // Cut 100mm * 100mm rectangle
     ofPolyline line;
     line.addVertex(0, 0);
     line.addVertex(100, 0);
@@ -94,14 +92,14 @@ ofxEpilog の使い方
     }
     ```  
 
-    _カスタムオブジェクトを加工ジョブとして送信したい場合、 `ofPtr<HPGLBuffer> HPGLBuffer::create()` メソッドをオーバーロードするか、 `HPGLBuffer` のサブクラスを作成し、ファクトリメソッドを追加することで可能になります。_  
+    _If you want to send other types of object, overload `ofPtr<HPGLBuffer> HPGLBuffer::create()` method, or create subclasses of `HPGLBuffer` class then implement factory method._  
 
-    * 接続を切ります。    
+    * Disconnect.    
     ```cpp
     epilogLaser.disconnect();
     ```  
 
-サンプルプログラム
+Examples
 ---
 * example-ofxEpilogBasicExample
 * example-ofxEpilogGMLExample
