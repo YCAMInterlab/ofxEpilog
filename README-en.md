@@ -8,7 +8,7 @@ ofxEpilog lets you control Epilog laser cutters interactive, generative in Open 
 
 Installation
 ---
-* If you haven't donwloaded Open Frameworks, get `of_v0.8.0_osx_release.zip` from oF site.
+* If you haven't downloaded Open Frameworks, get `of_v0.8.0_osx_release.zip` from oF site.
   We are using v0.8.0 to develop and test.  
   **<http://www.openframeworks.cc/download/>**
 
