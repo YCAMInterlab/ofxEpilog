@@ -37,7 +37,6 @@ ofPtr<HPGLBuffer> HPGLBuffer::create(ofPolyline line, OutputConfig config)
     std::ostringstream stream;
     string tmp = "";
     double x,y = 0;
-    
     vector<ofPoint> vertices = line.getVertices();
     x = ((double)config.dpi/(double)MM_PER_INCH) * vertices[0].x;
     y = ((double)config.dpi/(double)MM_PER_INCH) * vertices[0].y;
@@ -79,45 +78,201 @@ ofPtr<HPGLBuffer> HPGLBuffer::create(ofPath path, OutputConfig config)
     //
 }
 
-ofPtr<HPGLBuffer> HPGLBuffer::create(ofImage img, OutputConfig config)
+ofPtr<HPGLBuffer> HPGLBuffer::create(ofPixels pixelsRef, ofPoint offset, OutputConfig config)
 {
     ofPtr<HPGLBuffer> buffer = ofPtr<HPGLBuffer>(new HPGLBuffer());
     
-    ofLog(OF_LOG_VERBOSE, "HPGLBuffer::create(ofImage, OutputConfig) img.width=%d, img.height=%d", img.width, img.height);
+    ofLog(OF_LOG_VERBOSE, "HPGLBuffer::create(ofPixels, OutputConfig) img.width=%d, img.height=%d", pixelsRef.getWidth(), pixelsRef.getHeight());
     
-    int w = img.width;
-    int h = img.height;
+    int w = pixelsRef.getWidth();
+    int h = pixelsRef.getHeight();
     if(w == 0 && h == 0)
         return buffer;
+
+    const int POINTS_PER_INCH = 72;
+    int basex = offset.x * config.dpi / POINTS_PER_INCH;
+    int basey = offset.y * config.dpi / POINTS_PER_INCH;
+    
+    std::ostringstream stream;
+    string tmp = "";
+    
+    unsigned char *pixels = pixelsRef.getPixels();
+    
+    
     //
     // TODO: finish implementation
     //
-    /*
-     int basex = 0;
-     int basey = 0;
-     
-     std::ostringstream stream;
-     string tmp = "";
-     
-     unsigned char *pixels = img.getPixels();
-     for(int i=0; i<w; i+=8)
-     {
-     for(int j=0; j<h; j+=8)
-     {
-     int r = pixels[j*3*w + i*3];
-     int g = pixels[j*3*w + i*3+1];
-     int b = pixels[j*3*w + i*3+2];
-     }
-     }
-    */
+    switch (pixelsRef.getNumChannels()) {
+        case 1: // Grayscale
+            for(int y=0; y<h; y++)
+            {
+                
+                for(int x=0; x<w; x++)
+                {
+                    int pixel = pixels[y*w+x];
+                    
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    stream << "\e*p" << basey + y << 'Y'; // *p#Y
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    stream << "\e*p" << basey << 'X'; // *p#X
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    
+                    /*
+                     *b#A    # = Number of unpacked bytes (1 byte = 8 pixels)
+                     If this is negative, pixels are unpacked right-to-left
+                     */
+                    /*
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    stream << "\e*b" << "????" << 'A'; // *b#A
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    */
+                    
+                    /*
+                     *b#W    # = Number of encoded bytes
+                     */
+                    /*
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    stream << "\e*b" << "????" << 'W'; // *b#W
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    */
+                }
+            }
+            break;
+        
+        case 3: // RGB
+            for(int y=0; y<h; y++)
+            {
+                for(int x=0; x<w; x++)
+                {
+                    int r = pixels[(y*w+x)*3];
+                    int g = pixels[(y*w+x)*3 +1];
+                    int b = pixels[(y*w+x)*3 +2];
+                    
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    stream << "\e*p" << basey + y << 'Y'; // *p#Y
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    stream << "\e*p" << basey << 'X'; // *p#X
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    
+                    /*
+                     *b#A    # = Number of unpacked bytes (1 byte = 8 pixels)
+                     If this is negative, pixels are unpacked right-to-left
+                     */
+                    /*
+                     stream.str("");
+                     stream.clear();
+                     tmp.erase();
+                     stream << "\e*b" << "????" << 'A'; // *b#A
+                     tmp = stream.str();
+                     buffer->append(tmp.c_str(), tmp.length());
+                     */
+                    
+                    /*
+                     *b#W    # = Number of encoded bytes
+                     */
+                    /*
+                     stream.str("");
+                     stream.clear();
+                     tmp.erase();
+                     stream << "\e*b" << "????" << 'W'; // *b#W
+                     tmp = stream.str();
+                     buffer->append(tmp.c_str(), tmp.length());
+                     */
+                }
+            }
+            break;
+        
+        case 4: // RGBA
+            for(int y=0; y<h; y++)
+            {
+                for(int x=0; x<w; x++)
+                {
+                    int r = pixels[(y*w+x)*4];
+                    int g = pixels[(y*w+x)*4 +1];
+                    int b = pixels[(y*w+x)*4 +2];
+                    int a = pixels[(y*w+x)*4 +3];
+                    
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    stream << "\e*p" << basey + y << 'Y'; // *p#Y
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    
+                    stream.str("");
+                    stream.clear();
+                    tmp.erase();
+                    stream << "\e*p" << basey << 'X'; // *p#X
+                    tmp = stream.str();
+                    buffer->append(tmp.c_str(), tmp.length());
+                    
+                    /*
+                     *b#A    # = Number of unpacked bytes (1 byte = 8 pixels)
+                     If this is negative, pixels are unpacked right-to-left
+                     */
+                    /*
+                     stream.str("");
+                     stream.clear();
+                     tmp.erase();
+                     stream << "\e*b" << "????" << 'A'; // *b#A
+                     tmp = stream.str();
+                     buffer->append(tmp.c_str(), tmp.length());
+                     */
+                    
+                    /*
+                     *b#W    # = Number of encoded bytes
+                     */
+                    /*
+                     stream.str("");
+                     stream.clear();
+                     tmp.erase();
+                     stream << "\e*b" << "????" << 'W'; // *b#W
+                     tmp = stream.str();
+                     buffer->append(tmp.c_str(), tmp.length());
+                     */
+                }
+            }
+            break;
+        
+        default:
+            break;
+    }
     
     return buffer;
+}
+
+ofPtr<HPGLBuffer> HPGLBuffer::create(ofImage img, ofPoint offset, OutputConfig config)
+{
+    ofLog(OF_LOG_VERBOSE, "HPGLBuffer::create(ofImage, OutputConfig) img.width=%d, img.height=%d", img.width, img.height);
+    return create(img.getPixelsRef(), offset, config);
 }
 
 ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
 {
     ofPtr<GMLBuffer> buffer = ofPtr<GMLBuffer>(new GMLBuffer());
-    
+
     if(gmlFilePath == "")
     {
         ofLog(OF_LOG_ERROR, "GML file path is empty.");
@@ -130,17 +285,17 @@ ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
         /*
          GML minimum format
          <gml spec='1.0 (minimum)'>
-         <tag>
-         <drawing>
-         <stroke>
-         <pt>
-         <x>0.0</x>
-         <y>0.0</y>
-         </pt>
-         </stroke>
-         </drawing>
-         </tag>
-         </gml>
+            <tag>
+                <drawing>
+                    <stroke>
+                        <pt>
+                            <x>0.0</x>
+                            <y>0.0</y>
+                        </pt>
+                    </stroke>
+                </drawing>
+            </tag>
+          </gml>
         */
         
         std::ostringstream stream;
@@ -169,6 +324,8 @@ ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
                     //
                     // TODO: Convert coordinates to the MM.
                     //
+                    //x *= 1000;
+                    //y *= 1000;
                     
                     stream.str("");
                     stream.clear();
@@ -185,7 +342,7 @@ ofPtr<GMLBuffer> GMLBuffer::create(string gmlFilePath, OutputConfig config)
                     tmp = stream.str();
                     buffer->append(tmp.c_str(), tmp.length());
                     
-                    //ofLog(OF_LOG_VERBOSE, "GML::stroke["+ofToString(i)+"]::pt["+ofToString(j)+"] x="+ofToString(x)+" y="+ofToString(y));
+                    ofLog(OF_LOG_VERBOSE, "GML::stroke["+ofToString(i)+"]::pt["+ofToString(j)+"] x="+ofToString(x)+" y="+ofToString(y));
                     
                     gml.setToSibling();
                 }
@@ -282,7 +439,7 @@ void ofxEpilog::setOutputConfig(OutputConfig config)
     {
         outputConfig = config;
     }
-    
+
     ofLog(OF_LOG_VERBOSE, "ofxEpilog::setOutputConfig(config) vspeed=%d, vpower=%d, rspeed=%d, rpower=%d, dpi=%d, freq=%d, rasterMode=%d", config.vspeed, config.vpower, config.rspeed, config.rpower, config.dpi, config.freq, config.rasterMode);
 }
 
@@ -298,7 +455,7 @@ bool ofxEpilog::connect(string ip, bool liveMode)
     
     ofLog(OF_LOG_VERBOSE, "ofxEpilog::connect(): start cnnecting to the laser cutter.");
     //isLiveMode = liveMode;
-    
+
     if(tcpClient.isConnected())
     {
         ofLog(OF_LOG_ERROR,"ofxEpilog: the connection is created already.You should disconnect first." );
@@ -312,7 +469,7 @@ bool ofxEpilog::connect(string ip, bool liveMode)
         return false;
     
     ofLog(OF_LOG_ERROR,"ofxEpilog:connect(): start sending LPR handshake packets." );
-    
+
     //
     // Send LPR Handshake Packets
     // See http://www.rfc-editor.org/rfc/rfc1179.txt
@@ -401,6 +558,8 @@ bool ofxEpilog::send(const ofPtr<HPGLBuffer> &buffer, JOB_TYPE type)
         return false;
     }
     
+    // TODO: validate if(workareaSize)
+    
     if(buffer->size() == 0)
     {
         ofLog(OF_LOG_VERBOSE, "HPGLBuffer is empty.");
@@ -412,6 +571,12 @@ bool ofxEpilog::send(const ofPtr<HPGLBuffer> &buffer, JOB_TYPE type)
     {
         if(1/*vector job is ready*/)
         {
+            //
+            // For keep alive test
+            //
+            isSent &= sendPCLRasterHeader();
+            if(!isSent) false;
+            
             isSent &= sendPCLVectorHeader();
             if(!isSent) false;
             isSent &= updateVectorOutputConfig();
@@ -457,7 +622,7 @@ bool ofxEpilog::sendPJLHeader()
     
     std::ostringstream stream;
     stream << "\e\%-12345X@PJL JOB NAME=ofxEpilog\r\n";
-    
+
     // Start sending JPL header
     return tcpClient.sendRaw(stream.str());
 }
@@ -526,12 +691,12 @@ bool ofxEpilog::sendPCLRasterHeader()
     stream.clear();
     stream << "\e*t" << outputConfig.dpi << "R"; // Resolution
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e&y0C"; // Global air assist (0 = global, 1 = local)
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e*r0F"; // Flush pages
@@ -541,32 +706,32 @@ bool ofxEpilog::sendPCLRasterHeader()
     stream.clear();
     stream << "\e&y" << outputConfig.rpower << "P"; // Raster power
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e&z" << outputConfig.rspeed << "S"; // Raster speed
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e*r" <<  floor((double)(outputConfig.dpi/(double)MM_PER_INCH) * workareaSize.height) << "T"; // 
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e*r" << floor((double)(outputConfig.dpi/(double)MM_PER_INCH) * workareaSize.width) << "S"; // 
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e*b" << outputConfig.rasterMode << "M"; // Raster compression
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e&y0O"; // Raster direction (0 = down, 1 = up)
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e&z" << 2 << "A"; // Air assist (0 = raster air assist off, 1 = raster air assist on, 2 = global air assist on)
@@ -586,7 +751,7 @@ bool ofxEpilog::sendPCLRasterJob(const ofPtr<HPGLBuffer> &buffer)
 bool ofxEpilog::sendPCLRasterFooter()
 {
     ofLog(OF_LOG_VERBOSE, "ofxEpilog::sendPCLRasterFooter(): start sending PCL raster footer.");
-    
+
     std::ostringstream stream;
     stream << "\e*rC"; // End graphics with reset
     stream << 0x1a << 0x4; // End of file markers
@@ -607,12 +772,12 @@ bool ofxEpilog::sendPCLVectorHeader()
     
     stream << "\eE@PJL ENTER LANGUAGE=PCL\r\n";
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e*r0F";
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e&y" << outputConfig.autoFocusEnabled <<"A"; // Auto focus
@@ -652,12 +817,12 @@ bool ofxEpilog::sendPCLVectorHeader()
     stream.clear();
     stream << "\e*r" << floor((double)(outputConfig.dpi/(double)MM_PER_INCH) * workareaSize.height) << "T"; //
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e*r" << floor((double)(outputConfig.dpi/(double)MM_PER_INCH) * workareaSize.width) << "S"; // 
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e*r1A"; // Start at current position
@@ -667,17 +832,17 @@ bool ofxEpilog::sendPCLVectorHeader()
     stream.clear();
     stream << "\e*rC"; // End graphics with reset
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "\e\%1B"; // 
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
     stream << "IN;"; // We are now in HPGL mode
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     return isSent;
 }
 
@@ -685,7 +850,7 @@ bool ofxEpilog::sendPCLVectorJob(const ofPtr<HPGLBuffer> &buffer)
 {
     ofLog(OF_LOG_VERBOSE, "ofxEpilog::sendPCLVectorJob(): start sending PCL vector job, buffer.size=%d.", buffer->size());
     ofLog(OF_LOG_VERBOSE, "\tbuffer=" + buffer->getText());
-    
+
     // Start sending PCL vector job
     return tcpClient.sendRawBytes(buffer->getBinaryBuffer(), buffer->size());
 }
@@ -693,7 +858,7 @@ bool ofxEpilog::sendPCLVectorJob(const ofPtr<HPGLBuffer> &buffer)
 bool ofxEpilog::sendPCLVectorFooter()
 {
     ofLog(OF_LOG_VERBOSE, "ofxEpilog::sendPCLVectorFooter(): start sending PCL vector footer.");
-    
+
     //
     // Start sending PCL vector footer
     //
@@ -705,14 +870,14 @@ bool ofxEpilog::sendPCLVectorFooter()
     
     stream.str("");
     stream.clear();
-    stream << "\e\%0B"; // End HLGL
+    stream << "\e\%0B"; // End HPGL
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     stream.str("");
     stream.clear();
-    stream << "\e\%1BPU"; // Start HLGL, and pen up, end
+    stream << "\e\%1BPU"; // Start HPGL, and pen up, end
     isSent &= tcpClient.sendRaw(stream.str());
-    
+
     return isSent;
 }
 
@@ -728,11 +893,11 @@ bool ofxEpilog::updateVectorOutputConfig()
     //
     std::ostringstream stream;
     bool isSent = true;
-    
+
     stream << "XR" << setfill('0') << setw(4) << right << outputConfig.freq << ';'; // Vector freq
     stream << "YP" << setfill('0') << setw(3) << right << outputConfig.vpower << ';'; // Vector power
     stream << "ZS" << setfill('0') << setw(3) << right << outputConfig.vspeed << ';'; // Vector speed
-    
+
     ofLog(OF_LOG_VERBOSE, stream.str());
     
     isSent &= tcpClient.sendRaw(stream.str());
@@ -741,25 +906,25 @@ bool ofxEpilog::updateVectorOutputConfig()
 }
 
 /*
- // Not supporting thread feature yet
- void ofxEpilog::threadedFunction()
- {
- while(isThreadRunning())
- {
- if(tcpClient.isConnected())
- {
- 
- //lock();
- //
- // manipulate shared resources
- //
- //unlock();
- 
- }
- else
- {
- 
- }
- }
- }
+// Not supporting thread feature yet
+void ofxEpilog::threadedFunction()
+{
+    while(isThreadRunning())
+    {
+        if(tcpClient.isConnected())
+        {
+            
+            //lock();
+            //
+            // manipulate shared resources
+            //
+            //unlock();
+            
+        }
+        else
+        {
+            
+        }
+    }
+}
 */

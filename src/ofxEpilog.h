@@ -12,12 +12,12 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -73,13 +73,13 @@ public:
     
     static ofPtr<HPGLBuffer> create(ofPolyline line, OutputConfig config);
     static ofPtr<HPGLBuffer> create(ofPath path, OutputConfig config);
-    static ofPtr<HPGLBuffer> create(ofImage img, OutputConfig config);
-    static ofPtr<HPGLBuffer> create(ofFile file, OutputConfig config);
+    static ofPtr<HPGLBuffer> create(ofImage img, ofPoint offset, OutputConfig config); // offset(mm)
+    static ofPtr<HPGLBuffer> create(ofPixels pixelsRef, ofPoint offset, OutputConfig config); // offset(mm)
 };
 
 //
 // GMLBuffer creates HPGL formatted string from Graffiti Markup Language.
-// To know GML detail, see http://www.graffitimarkuplanguage.com/g-m-l-spec/ . 
+// To know GML detail, see http://www.graffitimarkuplanguage.com/g-m-l-spec/ .
 //
 class GMLBuffer : public HPGLBuffer
 {
@@ -93,7 +93,6 @@ public:
     {
         //ofLog(OF_LOG_VERBOSE, "~GMLBuffer() is called." + ofToString(this));
     };
-    //static ofPtr<GMLBuffer> create(ofFile gml, OutputConfig config);
     static ofPtr<GMLBuffer> create(string gmlFilePath, OutputConfig config);
 };
 
@@ -120,9 +119,9 @@ public:
     
     void setOutputConfig(OutputConfig config);
     OutputConfig getOutputConfig();
-    
+
     bool send(const ofPtr<HPGLBuffer> &buffer, JOB_TYPE type);    
-    
+
 protected:
     string ipAddr;
     WorkareaSize workareaSize;
