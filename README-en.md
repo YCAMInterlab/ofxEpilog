@@ -26,7 +26,7 @@ Usage
     Check ofxNetwork and ofxEpilog at addons. 
     ![projectGenerator screen shot](https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage1.png)
 
-* __Adding an existing project__
+* __Adding into an existing project__
     * If you are not using ofxNetwork, create a new group named "ofxNetwork" inside addons group.
     * Drag ofxNetwork/src directory into this new group.
     * Create a new group named "ofxEpilog" inside addons group.
