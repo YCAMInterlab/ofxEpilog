@@ -15,7 +15,7 @@ Installation
 * Download newest version of ofxEpilog from github and extract it.  
   **<https://github.com/mitsuhito/ofxEpilog/archive/master.zip>**
   
-  If you are familiar with console, type `git clone git://github.com/mitsuhito/ofxEpilog.git` .  
+  Or if you are familiar with console, type `git clone git://github.com/mitsuhito/ofxEpilog.git` .  
 
 * Copy ofxEpilog directory into `of_v0.8.0_osx_release/addons/` .
   
