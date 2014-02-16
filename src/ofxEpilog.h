@@ -75,6 +75,7 @@ public:
     static ofPtr<HPGLBuffer> create(ofPath path, OutputConfig config);
     static ofPtr<HPGLBuffer> create(ofImage img, ofPoint offset, OutputConfig config); // offset(mm)
     static ofPtr<HPGLBuffer> create(ofPixels pixelsRef, ofPoint offset, OutputConfig config); // offset(mm)
+    static ofPtr<HPGLBuffer> createFromPaylaodFile(const string path, const string delimiter, ofPoint offset, OutputConfig config); // For debug
 };
 
 //
@@ -129,7 +130,8 @@ protected:
     ofxTCPClient tcpClient;
     static const uint PRINTER_SERVICE_PORT = 515;
     //MODEL modelType;
-    //bool isLiveMode;
+    bool isLiveMode;
+    unsigned long sentCount;
     //void threadedFunction();
     
     string hostname;
