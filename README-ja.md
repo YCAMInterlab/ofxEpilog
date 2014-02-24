@@ -33,7 +33,7 @@ ofxEpilog の使い方
     * addons グループの下に New Group でグループを新規作成し、"ofxEpilog" と名前を変更します。
     * ofxEpilog のグループの下に ofxEpilog/src をドラッグ&ドロップします。
     * Create groups for any added folders のみチェックが入っている状態で Finish を選択します。  
-    <img src="https://github.com/YCAMInterlab/ofxEpilog/master/images/ofxEpilogAddonUsage3.png"/>
+    <img src="https://raw.github.com/YCAMInterlab/ofxEpilog/master/images/ofxEpilogAddonUsage3.png"/>
 
 
 * __ofxEpilog クラスの利用方法__  
