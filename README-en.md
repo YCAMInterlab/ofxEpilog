@@ -31,7 +31,7 @@ Usage
     * Drag ofxNetwork/src directory into this new group.
     * Create a new group named "ofxEpilog" inside addons group.
     * Drag ofxEpilog/src directory into this new group.  
-    <img src="https://raw.github.com/YCAMInterlab/ofxEpilog/master/imagesofxEpilogAddonUsage3.png"/>
+    <img src="https://raw.github.com/YCAMInterlab/ofxEpilog/master/images/ofxEpilogAddonUsage3.png"/>
 
 
 * __Usage of ofxEpilog class__  
