@@ -108,5 +108,3 @@ ofxEpilog の使い方
 * example-ofxEpilogLiveExample
 
 
----
-mitsuhito.ando@gmail.com

@@ -105,6 +105,3 @@ Examples
 * example-ofxEpilogGMLExample
 * example-ofxEpilogLiveExample
 
-
----
-mitsuhito.ando@gmail.com
