@@ -13,9 +13,9 @@ Installation
   **<http://www.openframeworks.cc/download/>**
 
 * Download newest version of ofxEpilog from github and extract it.  
-  **<https://github.com/mitsuhito/ofxEpilog/archive/master.zip>**
+  **<https://github.com/YCAMInterlab/ofxEpilog/archive/master.zip>**
   
-  Or if you are familiar with console, type `git clone git://github.com/mitsuhito/ofxEpilog.git` .  
+  Or if you are familiar with console, type `git clone git://github.com/YCAMInterlab/ofxEpilog.git` .  
 
 * Copy ofxEpilog directory into `of_v0.8.0_osx_release/addons/` .
   
@@ -24,14 +24,14 @@ Usage
 ---
 * __Create a new project from projectGenerator__  
     Check ofxNetwork and ofxEpilog at addons. 
-    ![projectGenerator screen shot](https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage1.png)
+    ![projectGenerator screen shot](https://raw.github.com/YCAMInterlab/ofxEpilog/master/images/ofxEpilogAddonUsage1.png)
 
 * __Adding into an existing project__
     * If you are not using ofxNetwork, create a new group named "ofxNetwork" inside addons group.
     * Drag ofxNetwork/src directory into this new group.
     * Create a new group named "ofxEpilog" inside addons group.
     * Drag ofxEpilog/src directory into this new group.  
-    <img src="https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage3.png"/>
+    <img src="https://raw.github.com/YCAMInterlab/ofxEpilog/master/imagesofxEpilogAddonUsage3.png"/>
 
 
 * __Usage of ofxEpilog class__  

@@ -13,9 +13,9 @@ ofxEpilog の特長は、Epilog のレーザーカッターを Open Frameworks �
   **<http://www.openframeworks.cc/download/>**
 
 * 最新版の ofxEpilog を github からダウンロードしてください。ダウンロードが完了したら任意の場所に展開しましょう。  
-  **<https://github.com/mitsuhito/ofxEpilog/archive/master.zip>**
+  **<https://github.com/YCAMInterlab/ofxEpilog/archive/master.zip>**
   
-  もしくはコマンドラインがお好きな方は `git clone git://github.com/mitsuhito/ofxEpilog.git` をしてください。  
+  もしくはコマンドラインがお好きな方は `git clone git://github.com/YCAMInterlab/ofxEpilog.git` をしてください。  
 
 * ofxEpilog ディレクトリを `of_v0.8.0_osx_release/addons/` ディレクトリ内にコピーしてください。
   
@@ -24,7 +24,7 @@ ofxEpilog の使い方
 ---
 * __projectGenerator を使用してプロジェクト新規作成にアドオンを追加する場合__  
     addons の項目に ofxNetwork と ofxEpilog を選択し、追加してください。  
-    ![projectGenerator screen shot](https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage1.png)
+    ![projectGenerator screen shot](https://raw.github.com/YCAMInterlab/ofxEpilog/master/images/ofxEpilogAddonUsage1.png)
 
 * __既存のプロジェクトに追加する場合__
     * ofxNetwork を既に使用していない場合、addons グループの下に New Group でグループを新規作成し、"ofxNetwork" と名前を変更します。
@@ -33,7 +33,7 @@ ofxEpilog の使い方
     * addons グループの下に New Group でグループを新規作成し、"ofxEpilog" と名前を変更します。
     * ofxEpilog のグループの下に ofxEpilog/src をドラッグ&ドロップします。
     * Create groups for any added folders のみチェックが入っている状態で Finish を選択します。  
-    <img src="https://raw.github.com/mitsuhito/ofxEpilog/master/ofxEpilogAddonUsage3.png"/>
+    <img src="https://github.com/YCAMInterlab/ofxEpilog/master/images/ofxEpilogAddonUsage3.png"/>
 
 
 * __ofxEpilog クラスの利用方法__  
