@@ -6,7 +6,7 @@
  Copyright (C) 2002-2008 Andrews & Arnold Ltd <info@aaisp.net.uk>
  Copyright (C) 2008 AS220 Labs <brandon@as220.org>
  Copyright (C) 2011 Trammell Hudson <hudson@osresearch.net>
- Copyright (C) 2013 Mitsuhito Ando <ando@ycam.jp, mitsuhito.ando@gmail.com>
+ Copyright (C) 2016 Mitsuhito Ando <ando@ycam.jp, mitsuhito.ando@gmail.com>
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -23,115 +23,43 @@
  
 */
 
-#pragma once
-
-//#ifndef __ofxEpilog__ofxEpilog__
-//#define __ofxEpilog__ofxEpilog__
+#ifndef _OFXEPILOG_H_
+#define _OFXEPILOG_H_
 
 #include "ofMain.h"
 #include "ofThread.h"
 #include "ofxNetwork.h"
-#include "ofxAssimpModelLoader.h"
-
-
-//
-//#include "dl_dxf.h"
-//#include "dl_attributes.h"
-//#include "dl_creationadapter.h"
-//
-////--------------------------------------------------------------------
-////
-//// TEST: dxf file raeder for dynamic focus mapping
-////
-//class DXFPathReader : public DL_CreationAdapter
-//{
-//public:
-//    ofPath getOfPath(string file_path)
-//    {
-//        DL_Dxf *dxf = new DL_Dxf();
-//        if(!dxf->in(file_path, this))
-//        {
-//            ofLog(OF_LOG_ERROR) << "PathReader::getOfPath() : Could not retrieve data from input file.";
-//        }
-//        delete dxf;
-//        //ofLog() << path.getOutline().size();
-//        return path;
-//    };
-//    void addLine(const DL_LineData &data)
-//    {
-//        // TODO: we have to flip y axis from rhino exported dxf coordination
-//        //    +y
-//        //     |
-//        //-x --+-- +x
-//        //     |
-//        //    -y
-//        path.lineTo(data.x1, data.y1, data.z1);
-//        path.lineTo(data.x2, data.y2, data.z2);
-//        int c = attributes.getColor();
-//        path.setColor(
-//                      ofColor(
-//                              (c & 0x00ff0000) >> 16 ,
-//                              (c & 0x0000ff00) >> 8,
-//                              (c & 0x00ff0000)
-//                              )
-//                      );
-//        //ofColor c = ofColor();
-//        path.close();
-//        
-//        
-//        //ofLog() << "addLine():: (x1:" << data.x1 << ", y1:" << data.y1 << ", z1:" << data.z1 << "), (x2:" << data.x2 << ", y2:" << data.y2 << ", z2:" << data.z2 << ")";
-//    };
-//    
-//    void addAttribute(const DL_AttributeData& data)
-//    {
-//    };
-//    
-//    void addPolyline(const DL_PolylineData &data)
-//    {
-//        ofLog() << "addPolyLine()::" << " m:" << data.m << " n:" << data.n << " number:" << data.number;
-//        path.close();
-//    };
-//    
-//    void addSpline(const DL_SplineData &data)
-//    {
-//        ofLog() << "addSpline()::";
-//    };
-//    
-//    void addVertex(const DL_VertexData &data)
-//    {
-//        ofLog() << "addVertex()::" << "x:" << data.x << " y:" << data.y << " z:" << data.z << " bulge:" << data.bulge;
-//        path.lineTo(ofPoint(data.x, data.y, data.z));
-//        
-//    };
-//    
-//private:
-//    ofPath path;
-//};
 
 //--------------------------------------------------------------------
 //
 // Constants
 //
-#define MM_PER_INCH 25.4
+//--------------------------------------------------------------------
 
-const string PJL_HEADER                          = "\e%%-12345X@PJL JOB NAME=%s\r\n\eE@PJL ENTER LANGUAGE=PCL\r\n";
+const double MM_PER_INCH = 25.4;
+
+const string PCL_UNIVERSAL_EXIT_LANG             = "\e%-12345X";
+const string PJL_JOB_NAME                        = "@PJL JOB NAME=%s\r\n";
+const string PJL_SWITCH_LANG_TO_PCL              = "@PJL ENTER LANGUAGE=PCL\r\n";
+const string PJL_EOJ                             = "@PJL EOJ \r\n";
 const string PJL_FOOTER                          = "\e%-12345X@PJL EOJ \r\n";
 
 const string PCL_COLOR_COMPONENT_ONE             = "\e*v1536A";
 const string PCL_UNKNOWN_CMD1                    = "\e&y130001300003220S"; // ?
-const string PCL_TIME_STAMP                      = "\e&y%sD"; //"\e&y20150913212514D";
+const string PCL_TIME_STAMP                      = "\e&y%sD";
 const string PCL_UNKNOWN_CMD2                    = "\ey0V"; // ?
 const string PCL_UNKNOWN_CMD3                    = "\ey0T"; // ?
 const string PCL_UNKNOWN_CMD4                    = "\ey0Z"; // ?
-const string PCL_OFFSET_X                        = "\el0U";
-const string PCL_OFFSET_Y                        = "\el0X";
-const string PCL_PRINT_RESOLUTION                = "\eu%dD"; // 600 dpi
+const string PCL_OFFSET_X                        = "\e&l0U";
+const string PCL_OFFSET_Y                        = "\e&l0Z";
+const string PCL_PRINT_RESOLUTION                = "\e&u%dD"; // dpi
 const string PCL_POS_X                           = "\e*p%dX";
 const string PCL_POS_Y                           = "\e*p%dY";
-const string PCL_RASTER_RESOLUTION               = "\e*%dR"; // 600 dpi
-const string PCL_RASTER_ORIENTATION              = "\e*r0F"; // 0
+const string PCL_RASTER_RESOLUTION               = "\e*t%dR"; // dpi
+const string PCL_RASTER_ORIENTATION_PORTRAIT     = "\e*r0F";
 const string PCL_UNKNOWN_CMD5                    = "\e&z0T"; // ?
 const string PCL_UNKNOWN_CMD6                    = "\e&z0L"; // ?
+const string PCL_UNKNOWN_CMD7                    = "\e&y0C"; // ?
 
 // raster power 1~100%
 const string PCL_RASTER_POWER                    = "\e&y%dP";
@@ -147,29 +75,25 @@ const string PCL_RASTER_DEFAULT_THICKNESS_Z      = "\e&y%dA";
 const string PCL_RASTER_COLORMAP_OFFSET_Z        = "\e&y%dF";
 // raster thickness z 0~177.8mm, fusion only? e.g.3.3mm->130*0.001in, round( (1 / 0.0254mm) * (z_offset or thickness mm) = in (0.001) )
 const string PCL_RASTER_COLORMAP_THICKNESS_Z     = "\e&y%dB";
-
 const string PCL_RASTER_AIR_ASSIST               = "\e&z%dA"; // 0 = off, 1 = raster air assist on, 2 = global air assist on
-
 const string PCL_PAGE_WIDTH                      = "\e*r%dS"; // page width : e.g. %d = page_w_mm * (600dpi / 25.4mm)
 const string PCL_PAGE_HEIGHT                     = "\e*r%dT"; // page height : e.g. %d = page_h_mm * (600dpi / 25.4mm)
 
-const string PCL_RASTER_COMPRESSION1              = "\eb2MLT"; // TODO: check is this fusion only?
-const string PCL_RASTER_COMPRESSION2              = "\eb2M"; // ?
+// TODO(ando@ycam.jp): check is this fusion only?
+const string PCL_RASTER_COMPRESSION1              = "\e*b2MLT";
+const string PCL_RASTER_COMPRESSION2              = "\e*b%dM";
 const string PCL_RASTER_DIRECTION                = "\e&y%dO"; // 0 = down, 1 = up
 
 const string PCL_RASTER_START                    = "\e*r1A";
 const string PCL_RASTER_END                      = "\e*rC";
 
-// TODO : check encoding format and finish implement raster output
+// TODO(ando@ycam.jp) : check encoding format and finish implement raster output
 const string PCL_ROW_UNPACKED_BYTES              = "\e*b%dA";
 const string PCL_ROW_PACKED_BYTES                = "\e*b%dW";
-
 const string PCL_RESET                           = "\eE";
 
 const string HPGL_CMD_DELIMITER                  = ";";
-
 const string HPGL_START                          = "\e%1B";
-
 const string HPGL_VECTOR_INIT                    = "IN";
 
 const string HPGL_UNKNOWN                        = "ZL0"; // laser type selection? co2 or fiber
@@ -186,12 +110,11 @@ const string HPGL_VECTOR_SPEED                   = "ZS%d";//"ZS%03d";
 const string HPGL_VECTOR_FREQ_FUSION             = "XR%d";//"XR%03d";
 const string HPGL_VECTOR_FREQ_MINI               = "XR%d";//"XR%04d";
 
-// speed comp.? fusion only?
+// speed comp, fusion only?
 const string HPGL_VECTOR_SPEED_CMP               = "XS%d";
 
-// power comp.? fusion only?
+// power comp, fusion only?
 const string HPGL_VECTOR_POWER_CMP               = "XP%d";
-
 const string HPGL_VECTOR_AIR_ASSIST              = "WA%d"; // 0 = off, 1 = raster air assist on, 2 = global air assist on
 
 const string HPGL_VECTOR_PEN_UP                  = "PU";
@@ -205,7 +128,6 @@ const string HPGL_VECTOR_COLORMAP_OFFSET_Z       = "WD%d";
 
 // thickness z 0~177.8mm, fusion only? e.g.3.3mm->130*0.001in, round( (1 / 0.0254mm) * (z_offset or thickness mm) = in (0.001) )
 const string HPGL_VECTOR_COLORMAP_THICKNESS_Z    = "WC%d";
-
 const string HPGL_END                            = "\e%0B";
 
 
@@ -213,27 +135,29 @@ const string HPGL_END                            = "\e%0B";
 //
 // Machine profile
 //
+//--------------------------------------------------------------------
 struct MachineProfile
 {
     string name;
-    float width;              // unit: mm
-    float height;             // unit: mm
-    float z_top;              // unit: mm
-    float z_buttom;           // unit: mm
-    float min_thickness;      // unit: mm
-    float max_thickness;      // unit: mm
+    double width;              // unit: mm
+    double height;             // unit: mm
+    double z_top;              // unit: mm
+    double z_buttom;           // unit: mm
+    double min_thickness;      // unit: mm
+    double max_thickness;      // unit: mm
     int min_dpi;
     int max_dpi;
-    float min_freq;           // unit: hz or percentage
-    float max_freq;           // unit: hz or percentage
+    double min_freq;           // unit: hz or percentage
+    double max_freq;           // unit: hz or percentage
     bool is_freq_percentage;
-    float focus_dist;         // depends on lens spech
+    double focus_dist;         // depends on lens spech
 };
 
 //--------------------------------------------------------------------
 //
 // For default output configuration
 //
+//--------------------------------------------------------------------
 struct OutputConfig
 {
     int vec_speed = 10;
@@ -244,66 +168,24 @@ struct OutputConfig
     int vec_freq = 0;
     int ras_freq = 0;
     
-    float z_offset = 0.0;
-    float z_thickness = 0.0;
+    double z_offset = 0.0;
+    double z_thickness = 0.0;
     bool use_auto_fucus = false;
     
     enum RASTER_MODE { BMP16M = 7, BMPGRAY = 2 };
     RASTER_MODE raster_mode;
     
     bool use_bezier_cmd = false;
+    bool enable_laser_emit = false;
 };
-
-/*
-//
-// HPGLBuffer creates HPGL formatted string from ofPath, ofPolyline, ofPixels, ofImage, pdf, eps, jpg, png, gif ...
-// If you want to create from other types, make sub class and overload static method.
-//
-class HPGLBuffer : public ofBuffer
-{
-public:
-    HPGLBuffer() : ofBuffer()
-    {
-        //ofLog(OF_LOG_VERBOSE, "HPGLBuffer() is called." + ofToString(this));
-    };
-    
-    virtual ~HPGLBuffer()
-    {
-        //ofLog(OF_LOG_VERBOSE, "~HPGLBuffer() is called." + ofToString(this));
-    };
-    
-    static ofPtr<HPGLBuffer> create(ofPolyline line, OutputConfig config);
-    static ofPtr<HPGLBuffer> create(ofPath path, OutputConfig config);
-    static ofPtr<HPGLBuffer> create(ofImage img, ofPoint offset, OutputConfig config); // offset(mm)
-    static ofPtr<HPGLBuffer> create(ofPixels pixelsRef, ofPoint offset, OutputConfig config); // offset(mm)
-    static ofPtr<HPGLBuffer> createFromPaylaodFile(const string path, const string delimiter, ofPoint offset, OutputConfig config); // For debug
-};
-*/
-
-/*
-//
-// GMLBuffer creates HPGL formatted string from Graffiti Markup Language.
-// To know GML detail, see http://www.graffitimarkuplanguage.com/g-m-l-spec/ .
-//
-class GMLBuffer : public HPGLBuffer
-{
-public:
-    GMLBuffer() : HPGLBuffer()
-    {
-        //ofLog(OF_LOG_VERBOSE, "GMLBuffer() is called." + ofToString(this));
-    };
-    
-    virtual ~GMLBuffer()
-    {
-        //ofLog(OF_LOG_VERBOSE, "~GMLBuffer() is called." + ofToString(this));
-    };
-    static ofPtr<GMLBuffer> create(string gmlFilePath, OutputConfig config);
-};
-*/
 
 
 //--------------------------------------------------------------------
-//class ofxEpilog : public ofThread
+//
+// ofxEpilog class definition
+//
+//--------------------------------------------------------------------
+// TODO(ando@ycam.jp) : replace threaded class to support non-blocking operation
 class ofxEpilog
 {
     
@@ -311,81 +193,100 @@ public:
     ofxEpilog();
     ofxEpilog(const ofxEpilog &obj);
     ~ofxEpilog();
-    
-    void debug();
-    
-    // TODO: add non blocking feature
+        
+    // TODO(ando@ycam.jp): add non-blocking feature.
     void setup(MachineProfile m_profile, OutputConfig out_conf, bool save_pjl=false);
     
+    // connect to the laser cutter.
     bool connect(string ip, bool live=false);
+    
+    // close established connection.
     void disconnect();
     
+    // return the status of connection.
     bool isConnected();
 
+    // set epilog IP address.
     void setIPAddress(string ip);
+    
+    // return the epilog IP address.
     string getIPAddress() { return ip_address; };
 
+    // set specific type of epilog
+    // default machine profile is also defined at ofxEpilog::FUSION_32 and ofxEpilog::MINI_18.
+    // TODO(ando@ycam.jp) : add load feature of machine profile by XML.
     void setMachineProfile(MachineProfile m_profile);
+    
+    // return the current machine profile.
     MachineProfile& getMachineProfile(){ return machine_profile; };
     
+    // set parameters of job process, e.g. power, speed, freq, etc.
     void setOutputConfig(OutputConfig out_config);
+    
+    // return the current output configration.
     OutputConfig& getOutputConfig() { return output_conf; };
     
-    //bool send(const ofPtr<HPGLBuffer> &buffer, JOB_TYPE type);
+    // send vertexes os ofPolyline to epilog
+    bool send(ofPolyline line);
     
-    bool send(ofPolyline line, OutputConfig config);
-    bool send(ofPath path, OutputConfig config);
-    bool send(ofImage img, int w_mm, int h_mm, OutputConfig config, bool add_start_header=true, bool add_end_footer=true);
-    bool send(ofXml gml_file, int w_mm, int h_mm, OutputConfig config);
+    // send vertexes as ofPath to epilog
+    // TODO(ando@ycam.jp) : finish implementation.
+    bool send(ofPath path);
     
+    // send vertexes as ofImage to epilog
+    // TODO(ando@ycam.jp) : finish implementation.
+    bool send(ofImage img, int w_mm, int h_mm);
+    
+    // const machine profiles
     static const struct MachineProfile FUSION_32;
     static const struct MachineProfile MINI_18;
-    
-    //bool loadModel(string f_name);
-    
+
 protected:
+    // epilog's ip address
     string ip_address;
+    
+    // own host name
     string hostname;
     
+    // destination port
     static const uint PRINTER_SERVICE_PORT = 515;
+    
+    // tcp client object
     ofxTCPClient tcp_client;
     
+    // current machine profile
     MachineProfile machine_profile;
+    
+    // current output config
     OutputConfig output_conf;
     
-    //int DEFAULT_RESAMPLE_CNT = 200;
+    // live mode switch
+    bool keep_alive = false;
     
-    bool is_live_mode = false;
-    bool pjl_header_sent = false;
+    // pjl file export switch
     bool save_pjl_file = false;
     
-    //ofFile pjl_file;
+    // for pjl file output
     ofPtr<ofFile> pjl_file;
+
+    // return header of PJL payload
+    ofBuffer createPayloadHeader(MachineProfile &m_prof, OutputConfig &out_conf);
     
-    ofBuffer getPCLHeader();
+    // return raster part of PJL payload
+    ofBuffer createPayloadRasterBody(ofImage raster_img, OutputConfig &out_conf);
     
-    ofBuffer getPCLDefaultOutputConfig();
-    ofBuffer getPCLColorMappingOutputConfig(OutputConfig color_mapped_config);
-    ofBuffer getPCLRasterBody(ofImage img, int w_mm, int h_mm, bool add_start_header=true, bool add_end_footer=true);
+    // return vector parameters part of PJL payload
+    ofBuffer createPayloadVectorParams(OutputConfig &out_conf);
     
-    ofBuffer getHPGLHeader();
-    ofBuffer getHPGLDefaultOutputConfig();
-    ofBuffer getHPGLColorMappingOutputConfig(OutputConfig config);
-    ofBuffer getHPGLVectorBody(ofPolyline line, OutputConfig config, int resample_count=0);
-    ofBuffer getHPGLVectorBody(ofPath path, OutputConfig config, int resample_count=0);
+    // return vector part of PJL payload
+    ofBuffer createPayloadVectorBody(ofPolyline vector_vertexes, OutputConfig &out_conf);
     
-//    ofBuffer getHPGLVectorBody(ofPath path, OutputConfig config, bool use_bezier_output=false, int resample_count=200);
+    // return raster and vector part as combined
+    ofBuffer createPayloadCombinedBody(ofImage raster_img, ofPolyline vector_vertexes);
     
-    ofBuffer getHPGLFooter();
-    ofBuffer getPCLFooter();
-    
-    //ofxAssimpModelLoader model;
-    //void threadedFunction();
-    
-    
-private:
-    //virtual void threadedFunction();
+    // return footer part of PJL payload
+    ofBuffer createPayloadFooter();
 };
 
 
-//#endif
+#endif // _OFXEPILOG_H_
