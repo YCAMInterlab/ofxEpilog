@@ -2,10 +2,6 @@
  
  ofxDxfReader - DXF file reader.
  
- 
- Copyright (C) 2002-2008 Andrews & Arnold Ltd <info@aaisp.net.uk>
- Copyright (C) 2008 AS220 Labs <brandon@as220.org>
- Copyright (C) 2011 Trammell Hudson <hudson@osresearch.net>
  Copyright (C) 2016 Mitsuhito Ando <ando@ycam.jp, mitsuhito.ando@gmail.com>
  
  This program is free software: you can redistribute it and/or modify
