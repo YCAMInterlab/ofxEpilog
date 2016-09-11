@@ -475,7 +475,7 @@ ofBuffer ofxEpilog::createPayloadVectorBody(ofPolyline vector_vertexes, OutputCo
             // update parameters of vector process
             buffer.append(createPayloadVectorParams(out_conf));
             
-            if(out_conf.enable_laser_emit)
+            if(out_conf.enable_laser_emit && i != 0)
                 buffer.append(HPGL_VECTOR_PEN_DOWN); // PD
             else
                 buffer.append(HPGL_VECTOR_PEN_UP); // PU
