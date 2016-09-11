@@ -71,8 +71,6 @@ ofxEpilog::~ofxEpilog()
     if(tcp_client.isConnected())
         disconnect();
     
-    //model.clear();
-    
     if(save_pjl_file)
     {
         if(pjl_file.get() != NULL)

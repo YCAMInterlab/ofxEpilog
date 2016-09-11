@@ -1,7 +1,7 @@
 /*
  
  ofxEpilog - OpenFrameworks library for Epilog laser cutter.
- 
+
  
  Copyright (C) 2002-2008 Andrews & Arnold Ltd <info@aaisp.net.uk>
  Copyright (C) 2008 AS220 Labs <brandon@as220.org>
