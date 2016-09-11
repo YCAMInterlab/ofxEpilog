@@ -42,7 +42,7 @@ const struct MachineProfile ofxEpilog::FUSION_32 =
 // https://www.epiloglaser.com/products/legend-laser-series.htm#techspecs
 const struct MachineProfile ofxEpilog::MINI_18 =
 {
-    "Mini_18", 457, 305, 0, 0, 0, 177.8, 75, 1200, 0, 5000, false, 38.1
+    "Mini_18", 457, 305, 0, 0, 0, 177.8, 75, 1200, 10, 5000, false, 38.1
 };
 
 // Init ofxEpilog instance and set default values.
