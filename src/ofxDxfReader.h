@@ -63,9 +63,10 @@ public:
         //-x --+-- +x
         //     |
         //    -y
-        
-        path.lineTo(data.x1, data.y1, data.z1);
-        path.lineTo(data.x2, data.y2, data.z2);
+        //path.lineTo(data.x1, data.y1, data.z1);
+        //path.lineTo(data.x2, data.y2, data.z2);
+        path.lineTo(data.x1, fabs(data.y1), data.z1);
+        path.lineTo(data.x2, fabs(data.y2), data.z2);
         
         //
         // TODO(ando@ycam.jp): grab color infomation to determine cutting path or just moving the head.
