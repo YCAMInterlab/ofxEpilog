@@ -1,107 +1,20 @@
-ofxEpilog
-=========
+# ofxEpilog
 
-# Description
-ofxEpilog is an Open Frameworks addon for the Epilog laser cutters that runs on Mac OS X. Currently we are not supporting Windows and Linux.
-ofxEpilog lets you control Epilog laser cutters interactive, generative in Open Frameworks. It is possible to generate print jobs from familiar types of Open Frameworks and send it through TCP connection. Once you have established connection, you can send jobs to control head position and turn on or off laser beam continuously in almost real time.
+![header_image](https://cloud.githubusercontent.com/assets/222761/18414970/ecb88974-781a-11e6-9594-ba0818ba8341.jpg)
 
+## Description
+ofxEpilog is an openFrameworks addon for the Epilog laser cutters that runs on Mac OS X. Currently we are not supporting Windows and Linux.
+ofxEpilog lets you control Epilog laser cutters interactive, generative in openFrameworks. It is possible to generate print jobs from familiar types of openFrameworks and send it through TCP connection. Once you have established connection, the x-y position and the parameter of power, speed, and frequency of a laser, as well as the height of a table could be controlled in the cutting process instead of the pre-configured setting of the proprietary driver. By alternating the generation and transmission of the command of cutting, the addon could sequentially control a laser cutter in real time. This addon enables you to make following examples.
 
-Installation
----
-* If you haven't downloaded Open Frameworks, get `of_v0.8.0_osx_release.zip` from oF site.
-  We are using v0.8.0 to develop and test.  
-  **<http://www.openframeworks.cc/download/>**
+- Process a object with sequentially control. Not only pre-configured setting and cutting data, you can use various input data sources such as mouse, body motion like gaze in real time.
 
-* Download newest version of ofxEpilog from github and extract it.  
-  **<https://github.com/YCAMInterlab/ofxEpilog/archive/master.zip>**
-  
-  Or if you are familiar with console, type `git clone git://github.com/YCAMInterlab/ofxEpilog.git` .  
+- Process a structured or scanned 3D object. Epilog Fusion series have a function to control the focus with mapped to a color. Therefore, with the addon we could dynamically change the focus with its contour instead of dividing the data into different layers with the height with the proprietary driver. According to a given structured or scanned 3D object with a free-form surface, the addon could engrave 3D curves to the 3D object while keeping the focus by changing table height.
 
-* Copy ofxEpilog directory into `of_v0.8.0_osx_release/addons/` .
-  
+## Usage
+For more details, please see [ofxEpilog wiki](https://github.com/YCAMInterlab/ofxEpilog/wiki) .
 
-Usage
----
-* __Create a new project from projectGenerator__  
-    Check ofxNetwork and ofxEpilog at addons. 
-    ![projectGenerator screen shot](https://raw.github.com/YCAMInterlab/ofxEpilog/master/images/ofxEpilogAddonUsage1.png)
+## Disclaimer
+Yamaguchi Center for Arts and Media [YCAM] takes no responsibility regarding eventual damage resulting from your use of this text. In some cases of printing data structure may cause damage to people and laser cutters. Please be careful when you use this addon.
 
-* __Adding into an existing project__
-    * If you are not using ofxNetwork, create a new group named "ofxNetwork" inside addons group.
-    * Drag ofxNetwork/src directory into this new group.
-    * Create a new group named "ofxEpilog" inside addons group.
-    * Drag ofxEpilog/src directory into this new group.  
-    <img src="https://raw.github.com/YCAMInterlab/ofxEpilog/master/images/ofxEpilogAddonUsage3.png"/>
-
-
-* __Usage of ofxEpilog class__  
-
-    * Include header file.
-    ```cpp
-    #include "ofxEpilog.h"
-    ```  
-
-    * Create ofxEpilog instance.
-    ```cpp
-    ofxEpilog epilogLaser;
-    ```  
-
-    * Set maximum bed size of your laser cutter. 
-    ```cpp
-    WorkareaSize fusion;
-    fusion.width = 812;				    		// width  mm
-    fusion.height = 508;			    		// height mm
-    epilogLaser.setWorkareaSize(fusion);
-    ```  
-
-    * Set output parameters (Vector speed, Vector power, Raster speed, Raster power, Frequency, DPI, Auto focus).
-    ```cpp
-    OutputConfig config;
-    config.vspeed = 80;				    		// Vector speed   1-100%
-    config.vpower = 10;				    		// Vector power   1-100%
-    config.rspeed = 10;				    		// Raster speed   1-100%
-    config.rpower = 20;				    		// Raster power   1-100%
-    config.dpi = 200;				        	// DPI            75-1200
-    config.freq = 100;				        	// Frequency      1-100%
-    config.autoFocusEnabled = false;				// Auto focus
-    epilogLaser.setOutputConfig(config);
-    ```  
-
-    * Connect to the laser cutter.
-    ```cpp
-    bool isConnected = epilogLaser.connect("192.168.3.5");
-    ```  
-
-    * After establishing connection, you can send jobs to the laser cutter. Supported object types are `ofPolyline` , `ofImage` , `GMLBuffer (Graffiti Markup Language)` only.
-    ```cpp
-    // Cut 100mm * 100mm rectangle
-    ofPolyline line;
-    line.addVertex(0, 0);
-    line.addVertex(100, 0);
-    line.addVertex(100, 100);
-    line.addVertex(0, 100);
-    line.addVertex(0, 0);
-    line.close();
-    
-    ofPtr<HPGLBuffer> hpglBuffer = HPGLBuffer::create(line, epilogLaser.getOutputConfig());
-    
-    if(epilogLaser.isConnected())
-    {
-    	bool isSent = epilogLaser.send(hpglBuffer, VECTOR);
-    	ofLog(OF_LOG_NOTICE, "isSent=%d", isSent);
-    }
-    ```  
-
-    _If you want to send other types of object, overload `ofPtr<HPGLBuffer> HPGLBuffer::create()` method, or create subclasses of `HPGLBuffer` class then implement factory method._  
-
-    * Disconnect.    
-    ```cpp
-    epilogLaser.disconnect();
-    ```  
-
-Examples
----
-* example-ofxEpilogBasicExample
-* example-ofxEpilogGMLExample
-* example-ofxEpilogLiveExample
-
+## License
+GPL-3.0
