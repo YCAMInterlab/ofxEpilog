@@ -8,7 +8,7 @@ ofxEpilog lets you control Epilog laser cutters interactive, generative in openF
 
 - Process a object with sequentially control. Not only pre-configured setting and cutting data, you can use various input data sources such as mouse, body motion like gaze in real time.
 
-- Process a structured or scanned 3D object. Epilog Fusion series have a function to control the focus with mapped to a color. Therefore, with the addon we could dynamically change the focus with its contour instead of dividing the data into different layers with the height with the proprietary driver. According to a given structured or scanned 3D object with a free-form surface, the addon could engrave 3D curves to the 3D object while keeping the focus by changing table height.
+- Process a structured or scanned 3D object. Epilog Fusion series has a function to control the focus with mapped to a color. Therefore, with the addon we could dynamically change the focus with its contour instead of dividing the data into different layers with the height with the proprietary driver. According to a given structured or scanned 3D object with a free-form surface, the addon could engrave 3D curves to the 3D object while keeping the focus by changing table height.
 
 ## Usage
 For more details, please see [ofxEpilog wiki](https://github.com/YCAMInterlab/ofxEpilog/wiki) .
