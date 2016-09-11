@@ -1,5 +1,32 @@
 #include "ofApp.h"
 
+
+
+/*
+ //
+ // this example need following arduino code.
+ //
+ int a0_raw = 0;
+ int a1_raw = 0;
+ 
+ void setup()
+ {
+    Serial.begin(9600);
+ }
+ 
+ void loop()
+ {
+    a0_raw = analogRead(A0);
+    a1_raw = analogRead(A1);
+    byte a0 = map(a0_raw, 0, 1023, 0, 255);
+    byte a1 = map(a1_raw, 0, 1023, 0, 255);
+    Serial.write(a0);
+    Serial.write(a1);
+    delay(50);
+ }
+*/
+
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(25);

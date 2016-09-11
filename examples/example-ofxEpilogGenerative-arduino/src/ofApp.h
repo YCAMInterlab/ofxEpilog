@@ -35,5 +35,5 @@ class ofApp : public ofBaseApp{
         bool send_vertexes = false;
         float dist_threshold = 5;
     
-        ofSerial serial;    
+        ofSerial serial;
 };
